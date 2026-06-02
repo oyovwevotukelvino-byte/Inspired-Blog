@@ -1,16 +1,16 @@
 import { notFound } from 'next/navigation'
 import { client } from '@/lib/sanity'
 import { POST_QUERY } from '@/lib/queries'
-import { Post } from '@/types'
+import type { Post } from '@/types'
+
 import Image from 'next/image'
 import Link from 'next/link'
 import RichBody from '@/components/RichBody'
-import imageUrlBuilder from '@sanity/image-url'
-
-const builder = imageUrlBuilder(client)
-
+import { createImageUrlBuilder } from '@sanity/image-url'
+const builder = createImageUrlBuilder(client)
 function urlFor(source: any) {
-  return builder.image(source).url()
+  if (!source?.asset) return ''
+  return builder.image(source).width(1200).auto('format').url()
 }
 
 interface Params {
@@ -107,6 +107,31 @@ export default async function PostPage({ params }: { params: Promise<Params> }) 
 
       {/* Content */}
       <RichBody content={post.body} />
+      
+
+{/* Sermon Video */}
+{post.sermonVideo && (
+  <div className="mt-12">
+    <div className="relative w-full aspect-video rounded-2xl overflow-hidden shadow-2xl">
+      <iframe
+        src={`https://www.youtube.com/embed/${post.sermonVideo.match(/[?&]v=([^&]+)/)?.[1]}`}
+        title="Sermon Video"
+        allowFullScreen
+        className="absolute inset-0 w-full h-full"
+      />
+    </div>
+  </div>
+)}
+
+{/* Sermon Audio */}
+{post.sermonAudio?.asset && (
+  <div className="mt-8 bg-[#1E3A5F] rounded-2xl p-6">
+    <p className="text-white font-bold mb-4">🎵 Listen to this Sermon</p>
+    <audio controls className="w-full">
+      <source src={post.sermonAudio.asset.url} />
+    </audio>
+  </div>
+)}
 
       {/* Back Button */}
       <div className="mt-24 pt-12 border-t border-gray-200">

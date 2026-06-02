@@ -1,11 +1,52 @@
-# Sermon Page Implementation Progress
+# Production Upgrade TODO
 
-## Completed:
-- ✅ 1. Created `app/sermons/page.tsx` with server-side Sanity fetch for sermons (category-filtered posts), hero section, PostCard grid, empty state, and CTA to studio.
+## Phase 1 — Foundation Cleanup
+- [ ] Create clean folder architecture (components/ui, features, hooks, styles, animations)
+- [x] TypeScript: create `types/` folder and move existing `types.ts` into:
 
-## Remaining:
-- [ ] 2. Test locally: `cd pastordaviduchechukwu && npm run dev`, visit http://localhost:3000/sermons
-- [ ] 3. Add sermon content via /studio if page shows empty state (create 'sermons' category and posts if needed).
+  - [ ] `types/post.ts`
+  - [ ] `types/author.ts`
+  - [ ] `types/category.ts`
+  - [ ] `types/index.ts` barrel
+- [ ] Add reusable UI system
+  - [ ] `components/ui/Button.tsx` with variants (primary/accent/surface/muted)
+- [ ] Minimal replacements in sermon pages to prove end-to-end
+  - [ ] Update imports from moved types
+  - [ ] Replace hardcoded CTA patterns with `Button` where safe
 
-**Next:** Run the dev server to view the new /sermons page. It fetches published posts in the "sermons" category from Sanity.
+## Phase 2 — Visual Upgrade
+- [ ] Hero section upgrade (glow/gradient/grain/scripture text)
+- [ ] Typography upgrade (Syne + Inter)
+- [ ] Motion system (presets + stagger + transitions)
+- [ ] Glassmorphism UI (frosted cards)
+
+## Phase 3 — CMS Expansion (MOST IMPORTANT)
+- [ ] Sanity schema expansion (author/category/sermon/devotional/events/testimonies/quotes)
+- [ ] Portable Text rich blocks (scripture/quote/gallery/youtube/audio)
+- [ ] Draft preview + scheduled publishing + slug generation
+- [ ] Image optimization pipeline
+
+## Phase 4 — Sermon Platform
+- [ ] Dynamic sermon routes + video/audio + transcripts + downloadable notes
+- [ ] Sermon UX (progress/share/related/search)
+
+## Phase 5 — SEO & Performance
+- [ ] generateMetadata + OpenGraph + Twitter + canonical + sitemap/robots
+- [ ] Replace remaining <img> with next/image + lazy loading
+- [ ] Loading skeletons + route prefetching
+
+## Phase 6 — User Experience
+- [ ] loading.tsx + skeleton shimmer + empty/error states
+
+## Phase 7 — Advanced Features
+- [ ] Full-site search + filters
+- [ ] Newsletter signup (Resend/Mailchimp/ConvertKit)
+- [ ] Social sharing + copy link
+- [ ] Analytics + view count + engagement tracking
+
+## Phase 8 — Premium Polish
+- [ ] Animated navbar + active route indicator + mobile menu animation
+- [ ] Micro interactions (magnetic, glow hover, underline)
+- [ ] Audio experience (mini player + persistent player)
+
 

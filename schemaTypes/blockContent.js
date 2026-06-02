@@ -1,15 +1,6 @@
-import {defineType, defineArrayMember} from 'sanity'
 
-/**
- * This is the schema definition for the rich text fields used for
- * for this blog studio. When you import it in schemas.js it can be
- * reused in other parts of the studio with:
- *  {
- *    name: 'someName',
- *    title: 'Some title',
- *    type: 'blockContent'
- *  }
- */
+import {defineType, defineArrayMember, defineField} from 'sanity'
+
 export default defineType({
   title: 'Block Content',
   name: 'blockContent',
@@ -18,10 +9,6 @@ export default defineType({
     defineArrayMember({
       title: 'Block',
       type: 'block',
-      // Styles let you set what your user can mark up blocks with. These
-      // correspond with HTML tags, but you can set any title or value
-      // you want and decide how you want to deal with it where you want to
-      // use your content.
       styles: [
         {title: 'Normal', value: 'normal'},
         {title: 'H1', value: 'h1'},
@@ -30,38 +17,95 @@ export default defineType({
         {title: 'H4', value: 'h4'},
         {title: 'Quote', value: 'blockquote'},
       ],
-      lists: [{title: 'Bullet', value: 'bullet'}],
-      // Marks let you mark up inline text in the block editor.
+      lists: [
+        {title: 'Bullet', value: 'bullet'},
+        {title: 'Numbered', value: 'number'},
+      ],
       marks: {
-        // Decorators usually describe a single property – e.g. a typographic
-        // preference or highlighting by editors.
         decorators: [
           {title: 'Strong', value: 'strong'},
           {title: 'Emphasis', value: 'em'},
+          {title: 'Underline', value: 'underline'},
         ],
-        // Annotations can be any object structure – e.g. a link or a footnote.
         annotations: [
           {
             title: 'URL',
             name: 'link',
             type: 'object',
-            fields: [
-              {
-                title: 'URL',
-                name: 'href',
-                type: 'url',
-              },
-            ],
+            fields: [{title: 'URL', name: 'href', type: 'url'}],
           },
         ],
       },
     }),
-    // You can add additional types here. Note that you can't use
-    // primitive types such as 'string' and 'number' in the same array
-    // as a block type.
     defineArrayMember({
       type: 'image',
       options: {hotspot: true},
+      fields: [
+        defineField({name: 'alt', title: 'Alt text', type: 'string'}),
+        defineField({name: 'caption', title: 'Caption', type: 'string'}),
+      ],
+    }),
+    // Scripture block
+    defineArrayMember({
+      name: 'scripture',
+      title: 'Scripture',
+      type: 'object',
+      fields: [
+        defineField({name: 'verse', title: 'Verse text', type: 'text'}),
+        defineField({name: 'reference', title: 'Reference (e.g. John 3:16)', type: 'string'}),
+        defineField({
+          name: 'translation',
+          title: 'Translation',
+          type: 'string',
+          options: {
+            list: ['NIV', 'KJV', 'ESV', 'NKJV', 'NLT', 'AMP'],
+          },
+          initialValue: 'NIV',
+        }),
+      ],
+      preview: {
+        select: {title: 'reference', subtitle: 'verse'},
+      },
+    }),
+    // YouTube embed
+    defineArrayMember({
+      name: 'youtube',
+      title: 'YouTube Video',
+      type: 'object',
+      fields: [
+        defineField({name: 'url', title: 'YouTube URL', type: 'url'}),
+        defineField({name: 'caption', title: 'Caption', type: 'string'}),
+      ],
+      preview: {
+        select: {title: 'caption', subtitle: 'url'},
+      },
+    }),
+    // Audio file
+    defineArrayMember({
+      name: 'audioFile',
+      title: 'Audio Sermon',
+      type: 'object',
+      fields: [
+        defineField({name: 'title', title: 'Title', type: 'string'}),
+        defineField({name: 'file', title: 'Audio File', type: 'file', options: {accept: 'audio/*'}}),
+        defineField({name: 'duration', title: 'Duration (e.g. 45:00)', type: 'string'}),
+      ],
+      preview: {
+        select: {title: 'title', subtitle: 'duration'},
+      },
+    }),
+    // Pull quote
+    defineArrayMember({
+      name: 'pullQuote',
+      title: 'Pull Quote',
+      type: 'object',
+      fields: [
+        defineField({name: 'quote', title: 'Quote', type: 'text'}),
+        defineField({name: 'attribution', title: 'Attribution', type: 'string'}),
+      ],
+      preview: {
+        select: {title: 'quote'},
+      },
     }),
   ],
 })

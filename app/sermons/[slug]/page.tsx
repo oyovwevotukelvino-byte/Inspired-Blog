@@ -4,13 +4,15 @@ import { POST_QUERY } from '@/lib/queries'
 import Image from 'next/image'
 import Link from 'next/link'
 import RichBody from '@/components/RichBody'
-import imageUrlBuilder from '@sanity/image-url'
-import { Post } from '@/types'
+import { createImageUrlBuilder } from '@sanity/image-url'
+import type { Post } from '@/types'
 
-const builder = imageUrlBuilder(client)
+
+
+const builder = createImageUrlBuilder(client)
 
 function urlFor(source: any) {
-  if (!source) return '' // or return a placeholder URL
+  if (!source?.asset) return ''
   return builder.image(source).width(1200).auto('format').url()
 }
 
@@ -19,8 +21,8 @@ interface Params {
   slug: string
 }
 
-export async function generateMetadata({ params }: { params: Params })  {
-  const { slug } = params
+export async function generateMetadata({ params }: { params: Promise<Params> }) {
+  const { slug } = await params
 
   if (!slug) return { title: 'Post Not Found' }
 

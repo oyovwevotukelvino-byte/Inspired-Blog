@@ -1,10 +1,12 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import { client } from '@/lib/sanity'
-import imageUrlBuilder from '@sanity/image-url'
-import { Post } from '@/types'
+import { createImageUrlBuilder } from '@sanity/image-url'
 
-const builder = imageUrlBuilder(client)
+import type { Post } from '@/types'
+
+
+const builder = createImageUrlBuilder(client)
 
 function urlFor(source: any) {
   return builder.image(source).width(400).auto('format').url()!
@@ -21,9 +23,12 @@ export default function PostCard({ post }: Props) {
     day: 'numeric',
   })
 
-  const imageSrc = post.mainImage ? urlFor(post.mainImage.asset || post.mainImage) : '/placeholder.jpg'
+  const imageSrc = post.mainImage?.asset
+  ? builder.image(post.mainImage).width(400).auto('format').quality(80).url()
+  : null
 
   return (
+    
     <Link 
      href={`/sermons/${post.slug.current}`} className="post-card group block h-full bg-white rounded-2xl p-8 shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2">
       {post.mainImage && (

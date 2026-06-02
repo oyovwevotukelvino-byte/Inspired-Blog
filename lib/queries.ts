@@ -4,7 +4,7 @@ export const POSTS_QUERY = groq`*[_type == "post" && publishedAt < now()] | orde
   _id,
   title,
   slug,
-  "mainImage": mainImage {
+  mainImage {
     asset->{
       _id,
       url
@@ -22,14 +22,15 @@ export const POSTS_QUERY = groq`*[_type == "post" && publishedAt < now()] | orde
     name,
     slug
   },
-  "excerpt": pt::text(body[0].children[0])
+  excerpt,
+  postType
 }`
 
 export const POST_QUERY = groq`*[_type == "post" && slug.current == $slug][0]{
   _id,
   title,
   slug,
-  "mainImage": mainImage {
+  mainImage {
     asset->{
       _id,
       url
@@ -48,9 +49,19 @@ export const POST_QUERY = groq`*[_type == "post" && slug.current == $slug][0]{
     slug
   },
   body,
+  excerpt,
+  postType,
+  sermonNotes,
+  sermonAudio {
+    asset->{
+      url
+    }
+  },
+  sermonVideo
 }`
 
 export const CATEGORIES_QUERY = groq`*[_type == "category"] | order(title asc) {
   _id,
-  title
+  title,
+  slug
 }`

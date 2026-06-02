@@ -3,6 +3,7 @@ import { client } from '@/lib/sanity'
 import { POSTS_QUERY } from '@/lib/queries'
 import PostCard from '@/components/PostCard'
 import { Post } from '@/types'
+import groq from 'groq'
 
 interface Props {
   params: { slug: string[] }
@@ -10,6 +11,7 @@ interface Props {
 }
 
 export default async function CategoriesPage({ params, searchParams }: Props) {
+  const { slug } = await params
   const categorySlug = params.slug?.[0]
   const query = categorySlug 
     ? groq`*[_type == "post" && references(*[_type == "category" && slug.current == "${categorySlug}"]._id)][0...20] | order(publishedAt desc)`

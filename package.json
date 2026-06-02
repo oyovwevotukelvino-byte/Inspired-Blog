@@ -13,14 +13,15 @@
   "dependencies": {
     "@sanity/client": "latest",
     "@sanity/image-url": "^2.1.0",
-    "@sanity/vision": "^5.24.0",
+    "@sanity/vision": "^5.27.0",
     "@tailwindcss/postcss": "^4.2.2",
     "framer-motion": "^12.38.0",
     "groq": "latest",
     "next": "latest",
+    "next-sanity": "^12.4.5",
     "react": "latest",
     "react-dom": "latest",
-    "sanity": "^5.24.0",
+    "sanity": "^5.27.0",
     "styled-components": "^6.1.18"
   },
   "devDependencies": {
