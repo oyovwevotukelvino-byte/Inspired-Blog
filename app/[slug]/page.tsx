@@ -1,8 +1,7 @@
 import { notFound } from 'next/navigation'
 import { client } from '@/lib/sanity'
 import { POST_QUERY } from '@/lib/queries'
-import type { Post } from '@/types'
-
+import type { Post } from '@/types/post'
 import Image from 'next/image'
 import Link from 'next/link'
 import RichBody from '@/components/RichBody'

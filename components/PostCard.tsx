@@ -23,9 +23,9 @@ export default function PostCard({ post }: Props) {
     day: 'numeric',
   })
 
-  const imageSrc = post.mainImage?.asset
+ const imageSrc: string | undefined = post.mainImage?.asset
   ? builder.image(post.mainImage).width(400).auto('format').quality(80).url()
-  : null
+  : undefined
 
   return (
     
@@ -33,13 +33,13 @@ export default function PostCard({ post }: Props) {
      href={`/sermons/${post.slug.current}`} className="post-card group block h-full bg-white rounded-2xl p-8 shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2">
       {post.mainImage && (
         <div className="relative h-64 mb-6 rounded-xl overflow-hidden">
-          <Image
-            src={imageSrc}
-            alt={post.title}
-            fill
-            className="object-cover group-hover:scale-105 transition-transform duration-500"
-            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-          />
+          {imageSrc && (
+         <Image
+           src={imageSrc}
+           alt={post.title}
+           fill
+         />
+         )}
         </div>
       )}
       <div className="space-y-3 flex-1 flex flex-col">

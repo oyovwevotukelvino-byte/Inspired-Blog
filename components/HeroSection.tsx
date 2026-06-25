@@ -64,12 +64,16 @@ export default function HeroSection() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, delay: 0.3 }}
         >
-          <Button as={Link} href="/categories/sermons" size="lg">
-            Latest Sermons →
-          </Button>
-          <Button as={Link} href="/categories/devotionals" size="lg" variant="surface">
-            Devotionals
-          </Button>
+           <Link href="/categories/sermons">
+              <Button size="lg">
+               Latest Sermons →
+             </Button>
+           </Link>
+           <Link href="/categories/devotionals">
+             <Button size="lg" variant="accent">
+               Daily Devotionals →
+             </Button>
+           </Link>
         </motion.div>
       </div>
     </section>
