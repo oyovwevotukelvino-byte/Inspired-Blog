@@ -10,9 +10,15 @@ import { motion } from 'framer-motion'
 
 
 async function getPosts() {
-  return await client.fetch(POSTS_QUERY)
+  try {
+    const posts = await client.fetch(POSTS_QUERY)
+    console.log("Fetched posts:", posts)
+    return posts
+  } catch (error) {
+    console.error("Sanity Error:", error)
+    return []
+  }
 }
-
 export default async function Home() {
   const posts = await getPosts()
   console.log(posts)

@@ -1,80 +1,191 @@
 import {defineField, defineType} from 'sanity'
+import {BookIcon} from '@sanity/icons'
 
 export default defineType({
   name: 'post',
-  title: 'Post',
+  title: 'Sermons',
   type: 'document',
+  icon: BookIcon,
+
+  groups: [
+    {
+      name: 'content',
+      title: 'Content',
+      default: true,
+    },
+    {
+      name: 'media',
+      title: 'Media',
+    },
+    {
+      name: 'downloads',
+      title: 'Downloads',
+    },
+  ],
+
   fields: [
-    defineField({name: 'title', title: 'Title', type: 'string'}),
+    defineField({
+      name: 'title',
+      title: 'Sermon Title',
+      type: 'string',
+      validation: Rule => Rule.required(),
+      group: 'content',
+    }),
+
     defineField({
       name: 'slug',
       title: 'Slug',
       type: 'slug',
-      options: {source: 'title', maxLength: 96},
+      hidden: true,
+      options: {
+        source: 'title',
+        maxLength: 96,
+      },
+      group: 'content',
     }),
-    defineField({name: 'author', title: 'Author', type: 'reference', to: {type: 'author'}}),
+
     defineField({
-      name: 'mainImage',
-      title: 'Main image',
-      type: 'image',
-      options: {hotspot: true},
-      fields: [defineField({name: 'alt', title: 'Alt text', type: 'string'})],
+      name: 'author',
+      title: 'Pastor',
+      type: 'reference',
+      to: [{type: 'author'}],
+      validation: Rule => Rule.required(),
+      group: 'content',
     }),
-    defineField({
-      name: 'categories',
-      title: 'Categories',
-      type: 'array',
-      of: [{type: 'reference', to: {type: 'category'}}],
-    }),
+
     defineField({
       name: 'postType',
-      title: 'Post Type',
+      title: 'Content Type',
       type: 'string',
       options: {
-        list: [
-          {title: 'Sermon', value: 'sermon'},
-          {title: 'Devotional', value: 'devotional'},
-          {title: 'Teaching', value: 'teaching'},
-          {title: 'Testimony', value: 'testimony'},
-          {title: 'Event', value: 'event'},
-        ],
         layout: 'radio',
+        list: [
+          {
+            title: '📖 Sermon',
+            value: 'sermon',
+          },
+          {
+            title: '❤️ Devotional',
+            value: 'devotional',
+          },
+          {
+            title: '🎓 Teaching',
+            value: 'teaching',
+          },
+          {
+            title: '🙌 Testimony',
+            value: 'testimony',
+          },
+          {
+            title: '📅 Event',
+            value: 'event',
+          },
+        ],
       },
       initialValue: 'sermon',
+      group: 'content',
     }),
-    defineField({name: 'publishedAt', title: 'Published at', type: 'datetime'}),
-    defineField({name: 'excerpt', title: 'Excerpt', type: 'text', rows: 3}),
-    defineField({name: 'body', title: 'Body', type: 'blockContent'}),
+
     defineField({
-      name: 'sermonNotes',
-      title: 'Downloadable Sermon Notes',
-      type: 'file',
-      options: {accept: '.pdf,.doc,.docx'},
+      name: 'categories',
+      title: 'Ministries',
+      type: 'array',
+      of: [
+        {
+          type: 'reference',
+          to: [{type: 'category'}],
+        },
+      ],
+      group: 'content',
     }),
+
     defineField({
-      name: 'sermonAudio',
-      title: 'Sermon Audio',
-      type: 'file',
-      options: {accept: 'audio/*'},
+      name: 'publishedAt',
+      title: 'Publish Date',
+      type: 'datetime',
+      initialValue: () => new Date().toISOString(),
+      group: 'content',
     }),
+
+    defineField({
+      name: 'excerpt',
+      title: 'Short Description',
+      type: 'text',
+      rows: 3,
+      group: 'content',
+    }),
+
+    defineField({
+      name: 'body',
+      title: 'Message',
+      type: 'blockContent',
+      group: 'content',
+    }),
+
+    defineField({
+      name: 'mainImage',
+      title: 'Cover Image',
+      type: 'image',
+      options: {
+        hotspot: true,
+      },
+      fields: [
+        defineField({
+          name: 'alt',
+          title: 'Image Description',
+          type: 'string',
+        }),
+      ],
+      group: 'media',
+    }),
+
     defineField({
       name: 'sermonVideo',
-      title: 'Sermon Video URL (YouTube/Vimeo)',
+      title: 'YouTube / Vimeo Link',
       type: 'url',
+      description: 'Paste the full YouTube or Vimeo link.',
+      group: 'media',
+    }),
+
+    defineField({
+      name: 'sermonAudio',
+      title: 'Audio Recording',
+      type: 'file',
+      options: {
+        accept: 'audio/*',
+      },
+      group: 'downloads',
+    }),
+
+    defineField({
+      name: 'sermonNotes',
+      title: 'Sermon Notes (PDF)',
+      type: 'file',
+      options: {
+        accept: '.pdf,.doc,.docx',
+      },
+      group: 'downloads',
     }),
   ],
+
   preview: {
     select: {
       title: 'title',
-      author: 'author.name',
+      subtitle: 'publishedAt',
       media: 'mainImage',
-      postType: 'postType',
+      pastor: 'author.name',
+      type: 'postType',
     },
-    prepare(selection) {
-      const {author, postType} = selection
+
+    prepare({title, subtitle, media, pastor, type}) {
       return {
-        ...selection,
-        subtitle: `${postType ? postType.toUpperCase() : 'POST'} · by ${author || 'Unknown'}`,
+        title,
+        subtitle: `${type ? type.toUpperCase() : 'SERMON'} • ${pastor || 'Pastor'} • ${
+          subtitle
+            ? new Date(subtitle).toLocaleDateString()
+            : 'Draft'
+        }`,
+        media,
       }
     },
   },

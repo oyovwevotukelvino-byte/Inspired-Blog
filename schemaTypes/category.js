@@ -1,9 +1,13 @@
 import {defineField, defineType} from 'sanity'
+import {TagIcon} from '@sanity/icons'
+
+
 
 export default defineType({
   name: 'category',
-  title: 'Category',
+ title: 'Ministries',
   type: 'document',
+  icon: TagIcon,
   fields: [
     defineField({
       name: 'title',
@@ -18,7 +22,7 @@ export default defineType({
     }),
     defineField({
       name: 'description',
-      title: 'Description',
+      title: 'About this Ministry',
       type: 'text',
     }),
   ],
