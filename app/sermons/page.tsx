@@ -5,6 +5,7 @@ import PostCard from '@/components/PostCard'
 import type { Post } from '@/types'
 import AnimatedGrid from '@/components/AnimatedGrid'
 
+
 const SERMONS_QUERY = groq`*[_type == "post" && publishedAt < now() && references(*[_type == "category" && slug.current == "sermons"]._id)] | order(publishedAt desc) [0...12] {
   _id,
   title,

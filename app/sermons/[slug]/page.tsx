@@ -1,120 +1,159 @@
-import { notFound } from 'next/navigation'
-import { client } from '@/lib/sanity'
-import { POST_QUERY } from '@/lib/queries'
-import Image from 'next/image'
-import Link from 'next/link'
-import RichBody from '@/components/RichBody'
-import { createImageUrlBuilder } from '@sanity/image-url'
-import type { Post } from '@/types'
+import { notFound } from "next/navigation";
+import type { Metadata } from "next";
+import { client } from "@/lib/sanity";
+import { POST_QUERY } from "@/lib/queries";
+import Image from "next/image";
+import Link from "next/link";
+import RichBody from "@/components/RichBody";
+import { createImageUrlBuilder } from "@sanity/image-url";
+import type { Post } from "@/types";
+import ShareButtons from "@/components/ShareButtons";
 
-
-
-const builder = createImageUrlBuilder(client)
+const builder = createImageUrlBuilder(client);
 
 function urlFor(source: any) {
-  if (!source?.asset) return ''
-  return builder.image(source).width(1200).auto('format').url()
+  if (!source?.asset) return "";
+  return builder.image(source).width(1200).auto("format").url();
 }
-
 
 interface Params {
-  slug: string
+  slug: string;
 }
 
-export async function generateMetadata({ params }: { params: Promise<Params> }) {
-  const { slug } = await params
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<Params>;
+}): Promise<Metadata> {
+  const { slug } = await params;
 
-  if (!slug) return { title: 'Post Not Found' }
+  const post: Post | null = await client.fetch(POST_QUERY, { slug });
 
-  const post: Post | null = await client.fetch(POST_QUERY, {
-    slug,
-  })
+  if (!post) {
+    return {
+      title: "Post Not Found",
+    };
+  }
 
-  if (!post) return { title: 'Post Not Found' }
+  const image = post.mainImage
+    ? urlFor(post.mainImage)
+    : "/image.png";
 
   return {
     title: post.title,
-    description: post.excerpt,
-  }
+    description: post.excerpt || "Read this message by David Uchechukwu.",
+
+    openGraph: {
+      title: post.title,
+      description: post.excerpt || "",
+      url: `https://daviduchechukwu.vercel.app/sermons/${slug}`,
+      images: [
+        {
+          url: image,
+          width: 1200,
+          height: 630,
+        },
+      ],
+    },
+
+    twitter: {
+      card: "summary_large_image",
+      title: post.title,
+      description: post.excerpt || "",
+      images: [image],
+    },
+  };
 }
 
-export default async function SermonPage({ params }: { params: Params }) { const { slug } = await params
-
-  if (!slug) return notFound()
+export default async function SermonPage({
+  params,
+}: {
+  params: Promise<Params>;
+}) {
+  const { slug } = await params;
 
   const post: Post | null = await client.fetch(POST_QUERY, {
     slug,
-  })
+  });
 
-  if (!post) return notFound()
+  if (!post) notFound();
 
-  const date = new Date(post.publishedAt).toLocaleDateString('en-US', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-  })
+  const image = post.mainImage ? urlFor(post.mainImage) : "";
+
+  const date = new Date(post.publishedAt).toLocaleDateString("en-US", {
+    month: "long",
+    day: "numeric",
+    year: "numeric",
+  });
+
+  const pageUrl = `https://daviduchechukwu.vercel.app/sermons/${slug}`;
 
   return (
-    <article className="max-w-4xl mx-auto px-4 py-24">
-      {post.mainImage && (
-        <div className="relative h-[60vh] rounded-3xl overflow-hidden mb-16 shadow-2xl">
+    <article className="max-w-5xl mx-auto px-5 py-24">
+
+      {image && (
+        <div className="relative h-[420px] rounded-3xl overflow-hidden mb-14 shadow-xl">
           <Image
-            src={urlFor(post.mainImage)}
+            src={image}
             alt={post.title}
             fill
-            className="object-cover"
             priority
+            className="object-cover"
           />
         </div>
       )}
 
-      <header className="text-center mb-16">
-        {post.categories?.length > 0 && (
-          <div className="inline-flex items-center gap-2 bg-faith-gold/20 px-4 py-2 rounded-full mb-6 flex-wrap justify-center">
+      <header className="text-center">
+
+        {post.categories?.length ? (
+          <div className="flex flex-wrap justify-center gap-2 mb-6">
             {post.categories.map((cat) => (
               <Link
                 key={cat._id}
-                href={`/categories/${(cat as any).slug?.current || cat._id}`}
-                className="text-faith-gold font-semibold hover:underline"
+                href={`/categories/${(cat as any).slug?.current}`}
+                className="bg-[#D4A017]/10 text-[#D4A017] px-4 py-2 rounded-full text-sm font-semibold hover:bg-[#D4A017]/20"
               >
                 {cat.title}
               </Link>
             ))}
           </div>
-        )}
+        ) : null}
 
-        <h1 className="text-5xl md:text-6xl font-bold text-gray-800 mb-6 leading-tight">
+        <h1 className="text-5xl md:text-6xl font-bold mb-6 text-[#1E3A5F]">
           {post.title}
         </h1>
 
-        <div className="flex flex-col md:flex-row gap-4 items-center justify-center text-gray-500 mb-8">
-          {post.author && (
-            <span>
-              By{' '}
-              <Link
-                href={`/author/${post.author.slug?.current}`}
-                className="font-semibold hover:text-faith-blue"
-              >
-                {post.author.name}
-              </Link>
-            </span>
-          )}
-          <span>•</span>
-          <time>{date}</time>
+        <div className="text-gray-500 mb-10">
+          By{" "}
+          <span className="font-semibold text-[#1E3A5F]">
+            {post.author?.name}
+          </span>{" "}
+          • {date}
         </div>
+
       </header>
 
       <RichBody content={post.body} />
 
-      <div className="mt-24 pt-12 border-t border-gray-200">
+      
+
+      <div className="mt-16">
+        <ShareButtons
+          title={post.title}
+          url={pageUrl}
+        />
+      </div>
+
+      <div className="mt-20 border-t pt-10">
+
         <Link
           href="/sermons"
-          className="inline-flex items-center gap-2 text-faith-blue hover:text-faith-gold font-semibold"
+          className="inline-flex items-center gap-2 bg-[#1E3A5F] text-white px-6 py-3 rounded-xl hover:bg-[#294c75] transition"
         >
           ← Back to Sermons
         </Link>
+
       </div>
     </article>
-  )
+  );
 }
-
