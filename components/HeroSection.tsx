@@ -2,10 +2,16 @@
 import Link from 'next/link'
 import { motion } from 'framer-motion'
 import Button from '@/components/ui/Button'
+import MobileNav from "./MobileNav"
 
 export default function HeroSection() {
   return (
     <section className="relative py-40 text-center overflow-hidden">
+      <div className="absolute top-0 left-0 w-full z-50">
+       <div className="max-w-7xl mx-auto flex justify-end p-6">
+         <MobileNav />
+       </div>
+     </div>
       {/* gradient background */}
       <div className="absolute inset-0 bg-gradient-to-br from-[#1E3A5F] via-[#2a4f7c] to-[#1E3A5F]" />
 

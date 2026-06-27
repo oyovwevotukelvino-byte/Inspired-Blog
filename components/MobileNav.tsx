@@ -1,4 +1,5 @@
 'use client'
+
 import { useState } from 'react'
 import Link from 'next/link'
 
@@ -6,30 +7,58 @@ export default function MobileNav() {
   const [open, setOpen] = useState(false)
 
   return (
-    <div className="md:hidden">
+    <div className="md:hidden relative">
+
       <button
         onClick={() => setOpen(!open)}
-        className="text-white p-2 rounded-lg hover:bg-white/20 transition"
-        aria-label="Toggle menu"
+        className="text-white"
       >
-        {open ? (
-          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-          </svg>
-        ) : (
-          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-          </svg>
-        )}
+        {open ? '✕' : '☰'}
       </button>
 
       {open && (
-        <div className="absolute top-full left-0 right-0 bg-[#D4A017] shadow-lg py-4 px-4 flex flex-col gap-2">
-          <Link href="/" onClick={() => setOpen(false)} className="text-white hover:bg-white/20 px-4 py-3 rounded-lg transition">Home</Link>
-          <Link href="/sermons" onClick={() => setOpen(false)} className="text-white hover:bg-white/20 px-4 py-3 rounded-lg transition">Sermons</Link>
-          <Link href="/categories/devotionals" onClick={() => setOpen(false)} className="text-white hover:bg-white/20 px-4 py-3 rounded-lg transition">Devotionals</Link>
-          <Link href="/profile" onClick={() => setOpen(false)} className="text-white hover:bg-white/20 px-4 py-3 rounded-lg transition">Profile</Link>
-          <Link href="/studio" onClick={() => setOpen(false)} className="bg-[#1E3A5F] text-white px-4 py-3 rounded-lg hover:bg-[#0f2040] transition">Dashboard</Link>
+        <div className="absolute right-0 top-14 w-64 rounded-xl bg-[#1E3A5F] shadow-2xl overflow-hidden border border-white/10">
+
+          <Link
+            href="/"
+            onClick={() => setOpen(false)}
+            className="block px-5 py-4 text-white hover:bg-white/10"
+          >
+            Home
+          </Link>
+
+          <Link
+            href="/sermons"
+            onClick={() => setOpen(false)}
+            className="block px-5 py-4 text-white hover:bg-white/10"
+          >
+            Sermons
+          </Link>
+
+          <Link
+            href="/categories"
+            onClick={() => setOpen(false)}
+            className="block px-5 py-4 text-white hover:bg-white/10"
+          >
+            Categories
+          </Link>
+
+          <Link
+            href="/profile"
+            onClick={() => setOpen(false)}
+            className="block px-5 py-4 text-white hover:bg-white/10"
+          >
+            Profile
+          </Link>
+
+          <Link
+            href="/studio"
+            onClick={() => setOpen(false)}
+            className="block px-5 py-4 bg-[#D4A017] text-[#1E3A5F] font-semibold"
+          >
+            Dashboard
+          </Link>
+
         </div>
       )}
     </div>

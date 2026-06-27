@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://daviduchechukwu.vercel.app"),
@@ -93,7 +95,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body className="bg-white">
+       <Navbar />
+       {children}
+       <Footer />
+     </body>
     </html>
   );
 }
